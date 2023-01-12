@@ -1,0 +1,30 @@
+/* 1519. Number of Nodes in the Sub-Tree With the Same Label
+   Link :https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/description/
+*/
+class Solution {
+public:
+   vector<int>res;
+    
+    vector<int>dfs(int src , vector<int>adj[] , int par , string &labels){
+        vector<int>v(26,0);
+        v[labels[src]-'a']++;
+        for(auto ngbr:adj[src]){
+            if(ngbr==par) continue;
+            vector<int>v2=dfs(ngbr,adj,src,labels);
+            for(int i=0;i<26;i++)
+                v[i]+=v2[i];
+        }
+        res[src]=v[labels[src]-'a'];
+        return v;
+    }
+    vector<int> countSubTrees(int n, vector<vector<int>>& edges, string labels) {
+        res.resize(n,0);
+        vector<int>adj[n];
+        for(auto &e:edges){
+            adj[e[0]].push_back(e[1]);
+            adj[e[1]].push_back(e[0]);
+        }
+        vector<int>v=dfs(0,adj,-1,labels);
+        return res;
+    }
+};
