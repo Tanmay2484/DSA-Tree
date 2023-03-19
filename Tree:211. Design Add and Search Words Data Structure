@@ -1,0 +1,71 @@
+/* 211. Design Add and Search Words Data Structure
+   Link: https://leetcode.com/problems/design-add-and-search-words-data-structure/description/
+*/
+class WordDictionary {
+class TrieNode {
+public:
+    bool isEnd;
+    TrieNode* children[26];
+    TrieNode(): isEnd(false) {
+        for (int i = 0; i < 26; ++i) {
+            children[i] = nullptr;
+        }
+    }
+};
+
+void addWordHelper(string::iterator strBeg, string::iterator strEnd, TrieNode* cur) {
+    if (strBeg==strEnd) {   // When we reach the last char of the string
+        cur->isEnd = true; return;  // mark the current node as a word's end
+    }
+    int char_ind =  *strBeg - 'a';
+    
+    // If the branch corresponding to this first char is not established yet
+    if (cur->children[char_ind] == nullptr) 
+        cur->children[char_ind] = new TrieNode(); // then create that node
+    
+    // then recursively add the rest of the string
+    cur = cur->children[char_ind];
+    addWordHelper(strBeg+1, strEnd, cur);
+}
+
+bool searchWordHelper(string::iterator strBeg, string::iterator strEnd, TrieNode* cur) {
+    // If we reach the end of the string, see if the current node is a word's end
+    if (strBeg==strEnd) return cur->isEnd;
+    
+    int char_ind = *strBeg - 'a';
+    int nbeg = char_ind, nend = char_ind;      // The range of the child nodes to check. 
+    if (*strBeg == '.') {
+        nbeg = 0; nend = 25;    // '.' means to check all the 26 children.
+    }
+    
+    // If any subTrie in the checking range contains the substring, then report true
+    for (int i = nbeg; i <= nend; i++) {
+        if (cur->children[i] && searchWordHelper(strBeg+1, strEnd, cur->children[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+public:
+TrieNode root;
+
+// Adds a word into the data structure.
+void addWord(string word) {
+    addWordHelper(word.begin(), word.end(), &root);    
+}
+
+// Returns if the word is in the data structure. A word could
+// contain the dot character '.' to represent any one letter.
+bool search(string word) {
+    return searchWordHelper(word.begin(), word.end(), &root);
+}
+
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */
