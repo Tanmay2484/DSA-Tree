@@ -1,0 +1,54 @@
+/* 2360. Longest Cycle in a Graph
+   Link: https://leetcode.com/problems/longest-cycle-in-a-graph/description/
+*/
+class Solution {
+public:
+   int ans,c=0;
+   void dfs(int node, vector<int>& count, vector<int> adj[], vector<bool>& vis, vector<int>& dfsvis)
+   {
+        vis[node]=true;
+        dfsvis[node]=1;
+        for(auto i:adj[node])
+        {  
+          if(!vis[i])
+        {
+            c++;
+            count[i]=c;
+            dfs(i,count,adj,vis,dfsvis);
+            
+        }
+        else if(dfsvis[i]==1)
+        {
+            c++;
+            count[i]=c-count[i];
+            ans=max(ans,count[i]);
+    
+        }
+     }
+       dfsvis[node]=0;
+       return;
+   }
+    int longestCycle(vector<int>& edges) {
+        int n=edges.size();
+        ans=-1;
+        vector<int> adj[n+1];
+        for(int i=0;i<n;i++)
+        {
+            if(edges[i]!=-1)
+               adj[i].push_back(edges[i]);
+        }
+        vector<bool> vis(n+1,false);
+        vector<int> dfsvis(n+1,0);
+        vector<int> count(n+1,0);
+        for(int i=0;i<n;i++)
+        {
+            if(!vis[i])
+            {
+                c=0;
+                dfs(i,count,adj,vis,dfsvis); 
+            }
+        }
+        return ans;
+        
+    }
+};
