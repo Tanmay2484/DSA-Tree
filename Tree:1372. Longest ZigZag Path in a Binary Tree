@@ -1,0 +1,34 @@
+/*  1372. Longest ZigZag Path in a Binary Tree
+   Link:https://leetcode.com/problems/longest-zigzag-path-in-a-binary-tree/description/
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+  int longestZigZag(TreeNode* root) {
+    int maxi = 0;
+    if(root){
+      queue<tuple<TreeNode*,int,int>>q;  
+      q.push({root,0,2});                          
+      while(!q.empty()){
+        auto [node, val, dir] = q.front(); q.pop();
+        
+        if(node->right) q.push({node->right, dir ? 1 : val + 1 , 1});
+        else maxi = max(maxi, val);
+        
+        if(node->left)  q.push( {node->left, dir ? val + 1 : 1 , 0});
+        else maxi = max(maxi, val);
+      } 
+    }
+    return maxi;
+  }
+};
